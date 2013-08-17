@@ -79,6 +79,23 @@ def doctrim(docstring):
     # Return a single string:
     return '\n'.join(trimmed)
 
+def unindent(lines):
+    """
+    Remove common indentation from string.
+    """
+    # Determine minimum indentation (first line doesn't count):
+    indent = sys.maxsize
+    for line in lines:
+        stripped = line.lstrip()
+        if stripped:
+            indent = min(indent, len(line) - len(stripped))
+    # Remove indentation (first line is special):
+    trimmed = []
+    if indent < sys.maxsize:
+        for line in lines:
+            trimmed.append(line[indent:])
+    return trimmed
+
 def code_block(lines, language=''):
     """
     Mark the code segment for syntax highlighting.
@@ -90,6 +107,7 @@ def doctest2md(lines):
     Convert the given doctest to a syntax highlighted markdown segment.
     """
     is_only_code = True
+    lines = unindent(lines)
     for line in lines:
         if not line.startswith('>>> ') and not line.startswith('... ') and line not in ['>>>', '...']:
             is_only_code = False
@@ -145,6 +163,7 @@ def doc2md(docstr, title):
     md += make_toc(find_sections(lines))
     is_code = False
     for line in lines:
+        trimmed = line.lstrip()
         if is_code:
             if line:
                 code.append(line)
@@ -152,11 +171,11 @@ def doc2md(docstr, title):
                 is_code = False
                 md += doc_code_block(code, language)
                 md += [line]
-        elif line.startswith('>>> '):
+        elif trimmed.startswith('>>> '):
             is_code = True
             language = 'python'
             code = [line]
-        elif line.startswith('$ '):
+        elif trimmed.startswith('$ '):
             is_code = True
             language = 'bash'
             code = [line]
