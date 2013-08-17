@@ -43,6 +43,7 @@ At the moment  this is suited only  for a very specific use  case. It is
 hardly forseeable, if I will decide to improve on it in the near future.
 
 """
+import re
 import sys
 
 def doctrim(docstring):
@@ -129,22 +130,25 @@ def find_sections(lines):
     """
     Find all section names and return a list with their names.
     """
+    reg_section = re.compile('^#+ ')
     sections = []
     for line in lines:
-        if line.startswith('### '):
-            sections.append(line[4:])
+        if reg_section.match(line):
+            part = line.partition(' ')
+            sections.append((len(part[0]), part[2]))
     return sections
 
 def make_toc(sections):
     """
     Generate table of contents for array of section names.
     """
+    outer = min(n for n,t in sections)
     refs = []
-    for sec in sections:
+    for ind,sec in sections:
         ref = sec.lower()
         ref = ref.replace(' ', '-')
         ref = ref.replace('?', '')
-        refs.append("- [%s](#%s)" % (sec, ref))
+        refs.append("    "*(ind-outer) + "- [%s](#%s)" % (sec, ref))
     return refs
 
 
@@ -154,13 +158,16 @@ def doc2md(docstr, title):
     """
     text = doctrim(docstr)
     lines = text.split('\n')
+
+    sections = find_sections(lines)
+    level = min(n for n,t in sections)
     md = [
-        "## %s" % title,
+        "#"*max(level-1, 1) + " " + title,
         "",
         lines.pop(0),
         ""
     ]
-    md += make_toc(find_sections(lines))
+    md += make_toc(sections)
     is_code = False
     for line in lines:
         trimmed = line.lstrip()
