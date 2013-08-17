@@ -194,6 +194,11 @@ def doc2md(docstr, title):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) not in [2, 3]:
+        import __main__
+        help(__main__)
+        exit()
+
     import importlib
     import inspect
     import os
@@ -207,7 +212,11 @@ if __name__ == "__main__":
     add_path(os.path.realpath(os.path.abspath(os.path.dirname(file))))
     add_path(os.getcwd())
 
-    module = importlib.import_module(sys.argv[1])
+    mod_name = sys.argv[1]
+    if mod_name.endswith('.py'):
+        mod_name = mod_name.rsplit('.py', 1)[0]
+
+    module = importlib.import_module(mod_name)
     if len(sys.argv) == 3:
         docstr = module.__dict__[sys.argv[2]].__doc__
     else:
