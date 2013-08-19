@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# encoding: utf-8
 """
 Very lightweight docstring to Markdown converter.
 
@@ -142,6 +143,8 @@ def make_toc(sections):
     """
     Generate table of contents for array of section names.
     """
+    if not sections:
+        return []
     outer = min(n for n,t in sections)
     refs = []
     for ind,sec in sections:
@@ -160,7 +163,10 @@ def doc2md(docstr, title):
     lines = text.split('\n')
 
     sections = find_sections(lines)
-    level = min(n for n,t in sections)
+    if sections:
+        level = min(n for n,t in sections)
+    else:
+        level = 2
     md = [
         "#"*max(level-1, 1) + " " + title,
         "",
