@@ -47,6 +47,8 @@ hardly forseeable, if I will decide to improve on it in the near future.
 import re
 import sys
 
+__all__ = ['doctrim', 'doc2md']
+
 def doctrim(docstring):
     """
     Remove indentation from docstring.
