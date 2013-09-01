@@ -154,26 +154,8 @@ def make_toc(sections):
         refs.append("    "*(ind-outer) + "- [%s](#%s)" % (sec, ref))
     return refs
 
-
-def doc2md(docstr, title):
-    """
-    Convert a docstring to a markdown text.
-    """
-    text = doctrim(docstr)
-    lines = text.split('\n')
-
-    sections = find_sections(lines)
-    if sections:
-        level = min(n for n,t in sections)
-    else:
-        level = 2
-    md = [
-        "#"*max(level-1, 1) + " " + title,
-        "",
-        lines.pop(0),
-        ""
-    ]
-    md += make_toc(sections)
+def _doc2md(lines):
+    md = []
     is_code = False
     for line in lines:
         trimmed = line.lstrip()
@@ -196,8 +178,91 @@ def doc2md(docstr, title):
             md += [line]
     if is_code:
         md += doc_code_block(code, language)
-    return "\n".join(md)
+    return md
 
+def doc2md(docstr, title, min_level=1, more_info=False):
+    """
+    Convert a docstring to a markdown text.
+    """
+    text = doctrim(docstr)
+    lines = text.split('\n')
+
+    sections = find_sections(lines)
+    if sections:
+        level = min(n for n,t in sections) - 1
+    else:
+        level = 1
+
+    if level < min_level:
+        d = min_level - level
+        level = min_level
+        for s in sections:
+            s[0] += d
+
+    md = [
+        "#"*max(level, 1) + " " + title,
+        "",
+        lines.pop(0),
+        ""
+    ]
+    md += make_toc(sections)
+    md += _doc2md(lines)
+    if more_info:
+        return (md, sections)
+    else:
+        return "\n".join(md)
+
+def mod2md(module, title, title_api_section):
+    """
+    Generate markdown document from module, including API section. 
+    """
+    docstr = module.__doc__
+
+    text = doctrim(docstr)
+    lines = text.split('\n')
+
+    sections = find_sections(lines)
+    if sections:
+        level = min(n for n,t in sections) - 1
+    else:
+        level = 1
+
+    api_md = []
+    api_sec = []
+    if title_api_section and module.__all__:
+        sections.append((level+1, title_api_section))
+        for name in module.__all__:
+            api_sec.append((level+2, name))
+            api_md += ['', '']
+            entry = module.__dict__[name]
+            if entry.__doc__:
+                md, sec = doc2md(entry.__doc__, name,
+                        min_level=level+3, more_info=True)
+                api_sec += sec
+                api_md += md
+
+    sections += api_sec
+
+    md = [
+        "#"*max(level, 1) + " " + title,
+        "",
+        lines.pop(0),
+        ""
+    ]
+
+    md += make_toc(sections)
+    md += _doc2md(lines)
+
+    md += [
+        '',
+        '',
+        '#' * max(level+1, 2) + " " + title_api_section,
+        ''
+    ]
+    md += make_toc(api_sec)
+    md += api_md
+
+    return "\n".join(md)
 
 if __name__ == "__main__":
     # parse the program arguments
@@ -211,6 +276,9 @@ if __name__ == "__main__":
     group.add_argument(
             'entry', nargs='?',
             help='Convert only docstring of this entry in module.')
+    group.add_argument(
+            '-a', '--all', dest='all', action='store_true',
+            help='Create an API section with the contents of module.__all__.')
     parser.add_argument(
             '-t', '--title', dest='title',
             help='Document title (default is module name)')
@@ -236,9 +304,14 @@ if __name__ == "__main__":
 
     module = importlib.import_module(mod_name)
 
-    if args.entry:
-        docstr = module.__dict__[args.entry].__doc__
+    if args.all:
+        print(mod2md(module, title, 'API'))
+
     else:
-        docstr = module.__doc__
-    print(doc2md(docstr, title))
+        if args.entry:
+            docstr = module.__dict__[args.entry].__doc__
+        else:
+            docstr = module.__doc__
+
+        print(doc2md(docstr, title))
 
