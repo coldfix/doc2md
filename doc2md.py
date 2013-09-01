@@ -128,17 +128,26 @@ def doc_code_block(lines, language):
         lines = doctest2md(lines)
     return code_block(lines, language)
 
+_reg_section = re.compile('^#+ ')
+def is_heading(line):
+    return _reg_section.match(line)
+
+def get_heading(line):
+    assert is_heading(line)
+    part = line.partition(' ')
+    return len(part[0]), part[2]
+
+def make_heading(level, title):
+    return '#'*max(level, 1) + ' ' + title
 
 def find_sections(lines):
     """
     Find all section names and return a list with their names.
     """
-    reg_section = re.compile('^#+ ')
     sections = []
     for line in lines:
-        if reg_section.match(line):
-            part = line.partition(' ')
-            sections.append((len(part[0]), part[2]))
+        if is_heading(line):
+            sections.append(get_heading(line))
     return sections
 
 def make_toc(sections):
@@ -156,7 +165,7 @@ def make_toc(sections):
         refs.append("    "*(ind-outer) + "- [%s](#%s)" % (sec, ref))
     return refs
 
-def _doc2md(lines):
+def _doc2md(lines, shiftlevel=0):
     md = []
     is_code = False
     for line in lines:
@@ -176,6 +185,9 @@ def _doc2md(lines):
             is_code = True
             language = 'bash'
             code = [line]
+        elif shiftlevel != 0 and is_heading(line):
+            level, title = get_heading(line)
+            md += [make_heading(level + shiftlevel, title)]
         else:
             md += [line]
     if is_code:
@@ -195,19 +207,20 @@ def doc2md(docstr, title, min_level=1, more_info=False):
     else:
         level = 1
 
+    shiftlevel = 0
     if level < min_level:
-        d = min_level - level
+        shiftlevel = min_level - level
         level = min_level
-        sections = [(lev+d, tit) for lev,tit in sections]
+        sections = [(lev+shiftlevel, tit) for lev,tit in sections]
 
     md = [
-        "#"*max(level, 1) + " " + title,
+        make_heading(level, title),
         "",
         lines.pop(0),
         ""
     ]
     md += make_toc(sections)
-    md += _doc2md(lines)
+    md += _doc2md(lines, shiftlevel)
     if more_info:
         return (md, sections)
     else:
@@ -238,14 +251,14 @@ def mod2md(module, title, title_api_section):
             entry = module.__dict__[name]
             if entry.__doc__:
                 md, sec = doc2md(entry.__doc__, name,
-                        min_level=level+3, more_info=True)
+                        min_level=level+2, more_info=True)
                 api_sec += sec
                 api_md += md
 
     sections += api_sec
 
     md = [
-        "#"*max(level, 1) + " " + title,
+        make_heading(level, title),
         "",
         lines.pop(0),
         ""
@@ -257,7 +270,7 @@ def mod2md(module, title, title_api_section):
     md += [
         '',
         '',
-        '#' * max(level+1, 2) + " " + title_api_section,
+        make_heading(level+1, title_api_section),
         ''
     ]
     md += make_toc(api_sec)
