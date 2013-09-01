@@ -200,10 +200,21 @@ def doc2md(docstr, title):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) not in [2, 3]:
-        import __main__
-        help(__main__)
-        exit()
+    # parse the program arguments
+    import argparse
+    parser = argparse.ArgumentParser(
+            description='Convert docstrings to markdown.')
+
+    parser.add_argument(
+            'module', help='The module containing the docstring.')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+            'entry', nargs='?',
+            help='Convert only docstring of this entry in module.')
+    parser.add_argument(
+            '-t', '--title', dest='title',
+            help='Document title (default is module name)')
+    args = parser.parse_args()
 
     import importlib
     import inspect
@@ -218,15 +229,16 @@ if __name__ == "__main__":
     add_path(os.path.realpath(os.path.abspath(os.path.dirname(file))))
     add_path(os.getcwd())
 
-    mod_name = sys.argv[1]
+    mod_name = args.module
     if mod_name.endswith('.py'):
         mod_name = mod_name.rsplit('.py', 1)[0]
+    title = args.title or mod_name.replace('_', '-')
 
     module = importlib.import_module(mod_name)
-    if len(sys.argv) == 3:
-        docstr = module.__dict__[sys.argv[2]].__doc__
+
+    if args.entry:
+        docstr = module.__dict__[args.entry].__doc__
     else:
         docstr = module.__doc__
-
-    print(doc2md(docstr, sys.argv[1].replace('_', '-')))
+    print(doc2md(docstr, title))
 
