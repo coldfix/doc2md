@@ -198,8 +198,7 @@ def doc2md(docstr, title, min_level=1, more_info=False):
     if level < min_level:
         d = min_level - level
         level = min_level
-        for s in sections:
-            s[0] += d
+        sections = [(lev+d, tit) for lev,tit in sections]
 
     md = [
         "#"*max(level, 1) + " " + title,
