@@ -19,7 +19,7 @@ extent permitted by applicable law.
 ### Description
 
 Little convenience tool to extract docstrings from a module or class and
-convert them to GitHub Flavoured Markdown: 
+convert them to GitHub Flavoured Markdown:
 
 https://help.github.com/articles/github-flavored-markdown
 
@@ -194,7 +194,7 @@ def _doc2md(lines, shiftlevel=0):
         md += doc_code_block(code, language)
     return md
 
-def doc2md(docstr, title, min_level=1, more_info=False):
+def doc2md(docstr, title, min_level=1, more_info=False, toc=True):
     """
     Convert a docstring to a markdown text.
     """
@@ -219,16 +219,17 @@ def doc2md(docstr, title, min_level=1, more_info=False):
         lines.pop(0),
         ""
     ]
-    md += make_toc(sections)
+    if toc:
+        md += make_toc(sections)
     md += _doc2md(lines, shiftlevel)
     if more_info:
         return (md, sections)
     else:
         return "\n".join(md)
 
-def mod2md(module, title, title_api_section):
+def mod2md(module, title, title_api_section, toc=True):
     """
-    Generate markdown document from module, including API section. 
+    Generate markdown document from module, including API section.
     """
     docstr = module.__doc__
 
@@ -251,12 +252,13 @@ def mod2md(module, title, title_api_section):
             entry = module.__dict__[name]
             if entry.__doc__:
                 md, sec = doc2md(entry.__doc__, name,
-                        min_level=level+2, more_info=True)
+                        min_level=level+2, more_info=True, toc=False)
                 api_sec += sec
                 api_md += md
 
     sections += api_sec
 
+    # headline
     md = [
         make_heading(level, title),
         "",
@@ -264,16 +266,20 @@ def mod2md(module, title, title_api_section):
         ""
     ]
 
-    md += make_toc(sections)
+    # main sections
+    if toc:
+        md += make_toc(sections)
     md += _doc2md(lines)
 
+    # API section
     md += [
         '',
         '',
         make_heading(level+1, title_api_section),
-        ''
     ]
-    md += make_toc(api_sec)
+    if toc:
+        md += ['']
+        md += make_toc(api_sec)
     md += api_md
 
     return "\n".join(md)
@@ -295,6 +301,9 @@ if __name__ == "__main__":
             help='Create an API section with the contents of module.__all__.')
     parser.add_argument(
             '-t', '--title', dest='title',
+            help='Document title (default is module name)')
+    parser.add_argument(
+            '--no-toc', dest='toc', action='store_false', default=True,
             help='Document title (default is module name)')
     args = parser.parse_args()
 
@@ -319,7 +328,7 @@ if __name__ == "__main__":
     module = importlib.import_module(mod_name)
 
     if args.all:
-        print(mod2md(module, title, 'API'))
+        print(mod2md(module, title, 'API', toc=args.toc))
 
     else:
         if args.entry:
@@ -327,5 +336,5 @@ if __name__ == "__main__":
         else:
             docstr = module.__doc__
 
-        print(doc2md(docstr, title))
+        print(doc2md(docstr, title, toc=args.toc))
 
