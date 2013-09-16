@@ -40,7 +40,7 @@ The interface consists of the following functions:
 You can run this script from the command line like:
 
 ```bash
-$ doc2md.py module-name [class-name] > README.md
+$ doc2md.py [-a] [--no-toc] [-t title] module-name [class-name] > README.md
 ```
 
 
