@@ -1,29 +1,27 @@
 # encoding: utf-8
 from setuptools import setup
-from distutils.spawn import find_executable
-from subprocess import check_output
+import sys
 
-# Generate markdown from docstring
-try:
-    import doc2md
-    md = doc2md.doc2md(doc2md.__doc__, "doc2md", toc=False)
-except ImportError:
-    with open('README.md') as f:
-        md = f.read()
-
-# Generate .rst document for PyPi
-try:
-    import pypandoc
-    long_description = pypandoc.convert(md, 'rst', format='md')
-except ImportError:
-    long_description = None
+def long_description():
+    """Generate .rst document for PyPi."""
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--doc', dest="doc",
+            action="store_true", default=False)
+    args, sys.argv = parser.parse_known_args(sys.argv)
+    if args.doc:
+        import doc2md, pypandoc
+        md = doc2md.doc2md(doc2md.__doc__, "doc2md", toc=False)
+        long_description = pypandoc.convert(md, 'rst', format='md')
+    else:
+        return None
 
 # invoke distutils
 setup(
     name='doc2md',
     version='0.1.0',
     description='Lightweight docstring to markdown converter',
-    long_description=long_description,
+    long_description=long_description(),
     author='Thomas Gläßle',
     author_email='t_glaessle@gmx.de',
     url='https://github.com/coldfix/doc2md',
