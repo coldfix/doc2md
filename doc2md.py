@@ -55,19 +55,18 @@ doctrim = inspect.cleandoc
 def unindent(lines):
     """
     Remove common indentation from string.
+
+    Unlike doctrim there is no special treatment of the first line.
+
     """
-    # Determine minimum indentation (first line doesn't count):
-    indent = sys.maxsize
-    for line in lines:
-        stripped = line.lstrip()
-        if stripped:
-            indent = min(indent, len(line) - len(stripped))
-    # Remove indentation (first line is special):
-    trimmed = []
-    if indent < sys.maxsize:
-        for line in lines:
-            trimmed.append(line[indent:])
-    return trimmed
+    try:
+        # Determine minimum indentation:
+        indent = min(len(line) - len(line.lstrip())
+                     for line in lines if line)
+    except ValueError:
+        return lines
+    else:
+        return [line[indent:] for line in lines]
 
 def code_block(lines, language=''):
     """
