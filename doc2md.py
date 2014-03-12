@@ -252,7 +252,7 @@ def mod2md(module, title, title_api_section, toc=True):
 
     return "\n".join(md)
 
-if __name__ == "__main__":
+def main(args=None):
     # parse the program arguments
     import argparse
     parser = argparse.ArgumentParser(
@@ -273,7 +273,7 @@ if __name__ == "__main__":
     parser.add_argument(
             '--no-toc', dest='toc', action='store_false', default=True,
             help='Document title (default is module name)')
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     import importlib
     import inspect
@@ -306,3 +306,5 @@ if __name__ == "__main__":
 
         print(doc2md(docstr, title, toc=args.toc))
 
+if __name__ == "__main__":
+    main()
