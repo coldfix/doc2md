@@ -272,7 +272,7 @@ def main(args=None):
             help='Document title (default is module name)')
     parser.add_argument(
             '--no-toc', dest='toc', action='store_false', default=True,
-            help='Document title (default is module name)')
+            help='Do not automatically generate the TOC')
     args = parser.parse_args(args)
 
     import importlib
