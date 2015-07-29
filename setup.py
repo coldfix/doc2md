@@ -34,5 +34,6 @@ setup(
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
+    scripts=['doc2md.py', ],
 )
 
