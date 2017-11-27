@@ -1,6 +1,10 @@
 ## doc2md
 
-Very lightweight docstring to Markdown converter.
+Simplistic utility to extract docstrings from a module or class and throw
+them into a simple [GitHub Flavoured Markdown](md) document. Its purpose is
+to quickly generate `README.md` files for small projects.
+
+[md]: https://help.github.com/articles/github-flavored-markdown
 
 - [Project status](#project-status)
 - [Installation](#installation)
@@ -30,12 +34,6 @@ $ pip install doc2md
 
 
 ### Usage
-
-Simplistic utility to extract docstrings from a module or class and throw
-them into a simple [GitHub Flavoured Markdown](md) document. Its purpose is
-to quickly generate `README.md` files for small projects.
-
-[md]: https://help.github.com/articles/github-flavored-markdown
 
 You can run this script from the command line like:
 

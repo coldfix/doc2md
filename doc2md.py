@@ -1,7 +1,11 @@
 #! /usr/bin/env python
 # encoding: utf-8
 r"""
-Very lightweight docstring to Markdown converter.
+Simplistic utility to extract docstrings from a module or class and throw
+them into a simple [GitHub Flavoured Markdown](md) document. Its purpose is
+to quickly generate `README.md` files for small projects.
+
+[md]: https://help.github.com/articles/github-flavored-markdown
 
 ### Project status
 
@@ -23,12 +27,6 @@ No installation necessary. However, if you want:
 
 
 ### Usage
-
-Simplistic utility to extract docstrings from a module or class and throw
-them into a simple [GitHub Flavoured Markdown](md) document. Its purpose is
-to quickly generate `README.md` files for small projects.
-
-[md]: https://help.github.com/articles/github-flavored-markdown
 
 You can run this script from the command line like:
 
