@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # encoding: utf-8
-"""
+r"""
 Very lightweight docstring to Markdown converter.
 
 ### Project status

@@ -40,7 +40,8 @@ to quickly generate `README.md` files for small projects.
 You can run this script from the command line like:
 
 ```bash
-$ doc2md.py [-a] [--no-toc] [-t title] [-d depth] module-name [class-name]         > README.md
+$ doc2md.py [-a] [--no-toc] [-t title] [-d depth] module-name [class-name] \
+    > README.md
 ```
 
 At the moment  this is suited only  for a very specific use  case. It is
