@@ -6,7 +6,7 @@ Very lightweight docstring to Markdown converter.
 
 ### License
 
-Copyright © 2013 Thomas Gläßle <t_glaessle@gmx.de>
+Copyright © 2013-2017 Thomas Gläßle <t_glaessle@gmx.de>
 
 This work  is free. You can  redistribute it and/or modify  it under the
 terms of the Do What The Fuck  You Want To Public License, Version 2, as

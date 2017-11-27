@@ -25,7 +25,7 @@ setup(
     author='Thomas Gläßle',
     author_email='t_glaessle@gmx.de',
     url='https://github.com/coldfix/doc2md',
-    license='WTFPL',
+    license='MIT',
     py_modules=['doc2md',],
     classifiers=[
         'Development Status :: 3 - Alpha',
