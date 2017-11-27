@@ -236,8 +236,6 @@ def mod2md(module, title, title_api_section, toc=True):
                 api_sec += sec
                 api_md += md
 
-    sections += api_sec
-
     # headline
     md = [
         make_heading(level, title),
