@@ -32,7 +32,8 @@ to quickly generate `README.md` files for small projects.
 
 You can run this script from the command line like:
 
-    $ doc2md.py [-a] [--no-toc] [-t title] module-name [class-name] > README.md
+    $ doc2md.py [-a] [--no-toc] [-t title] [-d depth] module-name [class-name] \
+        > README.md
 
 At the moment  this is suited only  for a very specific use  case. It is
 hardly forseeable, if I will decide to improve on it in the near future.
@@ -41,7 +42,7 @@ For a simple example output document, see the generated README (i.e. the
 github frontpage). It is extracted from the `doc2md.py` file using this
 very utility:
 
-    ./doc2md.py -a doc2md > README.md
+    $ ./doc2md.py -a -d1 doc2md > README.md
 
 
 ### License
@@ -129,7 +130,7 @@ def find_sections(lines):
             sections.append(get_heading(line))
     return sections
 
-def make_toc(sections):
+def make_toc(sections, maxdepth=0):
     """
     Generate table of contents for array of section names.
     """
@@ -138,6 +139,8 @@ def make_toc(sections):
     outer = min(n for n,t in sections)
     refs = []
     for ind,sec in sections:
+        if maxdepth and ind-outer+1 > maxdepth:
+            continue
         ref = sec.lower()
         ref = ref.replace('`', '')
         ref = ref.replace(' ', '-')
@@ -200,14 +203,14 @@ def doc2md(docstr, title, min_level=1, more_info=False, toc=True):
         ""
     ]
     if toc:
-        md += make_toc(sections)
+        md += make_toc(sections, 1)
     md += _doc2md(lines, shiftlevel)
     if more_info:
         return (md, sections)
     else:
         return "\n".join(md)
 
-def mod2md(module, title, title_api_section, toc=True):
+def mod2md(module, title, title_api_section, toc=True, maxdepth=0):
     """
     Generate markdown document from module, including API section.
     """
@@ -236,6 +239,8 @@ def mod2md(module, title, title_api_section, toc=True):
                 api_sec += sec
                 api_md += md
 
+    sections += api_sec
+
     # headline
     md = [
         make_heading(level, title),
@@ -246,7 +251,7 @@ def mod2md(module, title, title_api_section, toc=True):
 
     # main sections
     if toc:
-        md += make_toc(sections)
+        md += make_toc(sections, maxdepth)
     md += _doc2md(lines)
 
     # API section
@@ -257,7 +262,7 @@ def mod2md(module, title, title_api_section, toc=True):
     ]
     if toc:
         md += ['']
-        md += make_toc(api_sec)
+        md += make_toc(api_sec, 1)
     md += api_md
 
     return "\n".join(md)
@@ -283,6 +288,9 @@ def main(args=None):
     parser.add_argument(
             '--no-toc', dest='toc', action='store_false', default=True,
             help='Do not automatically generate the TOC')
+    parser.add_argument(
+            '-d', '--depth', dest='depth', type=int, default=0,
+            help='Max subsection level in TOC')
     args = parser.parse_args(args)
 
     import importlib
@@ -306,7 +314,7 @@ def main(args=None):
     module = importlib.import_module(mod_name)
 
     if args.all:
-        print(mod2md(module, title, 'API', toc=args.toc))
+        print(mod2md(module, title, 'API', toc=args.toc, maxdepth=args.depth))
 
     else:
         if args.entry:
@@ -314,7 +322,7 @@ def main(args=None):
         else:
             docstr = module.__doc__
 
-        print(doc2md(docstr, title, toc=args.toc))
+        print(doc2md(docstr, title, toc=args.toc, maxdepth=args.depth))
 
 if __name__ == "__main__":
     main()
