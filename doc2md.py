@@ -139,6 +139,7 @@ def make_toc(sections):
     refs = []
     for ind,sec in sections:
         ref = sec.lower()
+        ref = ref.replace('`', '')
         ref = ref.replace(' ', '-')
         ref = ref.replace('?', '')
         refs.append("    "*(ind-outer) + "- [%s](#%s)" % (sec, ref))
@@ -226,11 +227,11 @@ def mod2md(module, title, title_api_section, toc=True):
     if title_api_section and module.__all__:
         sections.append((level+1, title_api_section))
         for name in module.__all__:
-            api_sec.append((level+2, name))
+            api_sec.append((level+2, "`" + name + "`"))
             api_md += ['', '']
             entry = module.__dict__[name]
             if entry.__doc__:
-                md, sec = doc2md(entry.__doc__, name,
+                md, sec = doc2md(entry.__doc__, "`" + name + "`",
                         min_level=level+2, more_info=True, toc=False)
                 api_sec += sec
                 api_md += md

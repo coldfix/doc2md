@@ -7,8 +7,8 @@ Very lightweight docstring to Markdown converter.
 - [Usage](#usage)
 - [License](#license)
 - [API](#api)
-    - [doctrim](#doctrim)
-    - [doc2md](#doc2md)
+    - [`doctrim`](#doctrim)
+    - [`doc2md`](#doc2md)
 
 ### Project status
 
@@ -69,11 +69,11 @@ extent permitted by applicable law.
 
 ### API
 
-- [doctrim](#doctrim)
-- [doc2md](#doc2md)
+- [`doctrim`](#doctrim)
+- [`doc2md`](#doc2md)
 
 
-#### doctrim
+#### `doctrim`
 
 Clean up indentation from docstrings.
 
@@ -82,7 +82,7 @@ Any whitespace that can be uniformly removed from the second line
 onwards is removed.
 
 
-#### doc2md
+#### `doc2md`
 
 Convert a docstring to a markdown text.
 
