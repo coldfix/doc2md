@@ -3,6 +3,17 @@
 """
 Very lightweight docstring to Markdown converter.
 
+### Project status
+
+I stopped using this package and therefore will not push any updates (I now
+usually write README.rst manually). Nonetheless, you may still find it useful.
+Should you encounter bugs or have improvements, feel free to submit a PR. If
+you want to take over maintenance, feel free to contact me.
+
+For a more feature-rich and well maintained alternative, see:
+
+- https://github.com/NiklasRosenstein/pydoc-markdown/ (I didn't try it)
+
 
 ### License
 

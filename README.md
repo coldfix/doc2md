@@ -2,10 +2,22 @@
 
 Very lightweight docstring to Markdown converter.
 
+- [Project status](#project-status)
 - [License](#license)
 - [Description](#description)
 - [API](#api)
 - [Limitations](#limitations)
+
+### Project status
+
+I stopped using this package and therefore will not push any updates (I now
+usually write README.rst manually). Nonetheless, you may still find it useful.
+Should you encounter bugs or have improvements, feel free to submit a PR. If
+you want to take over maintenance, feel free to contact me.
+
+For a more feature-rich and well maintained alternative, see:
+
+- https://github.com/NiklasRosenstein/pydoc-markdown/ (I didn't try it)
 
 
 ### License
@@ -13,7 +25,8 @@ Very lightweight docstring to Markdown converter.
 Copyright © 2013-2017 Thomas Gläßle <t_glaessle@gmx.de>
 
 This work  is free. You can  redistribute it and/or modify  it under the
-terms of the [MIT/expat license](https://opensource.org/licenses/MIT). See the COPYING.md file for more details.
+terms of the Do What The Fuck  You Want To Public License, Version 2, as
+published by Sam Hocevar. See the COPYING file for more details.
 
 This program  is free software.  It comes  without any warranty,  to the
 extent permitted by applicable law.
