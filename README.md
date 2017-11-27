@@ -3,10 +3,12 @@
 Very lightweight docstring to Markdown converter.
 
 - [Project status](#project-status)
+- [Installation](#installation)
+- [Usage](#usage)
 - [License](#license)
-- [Description](#description)
 - [API](#api)
-- [Limitations](#limitations)
+    - [doctrim](#doctrim)
+    - [doc2md](#doc2md)
 
 ### Project status
 
@@ -18,6 +20,39 @@ you want to take over maintenance, feel free to contact me.
 For a more feature-rich and well maintained alternative, see:
 
 - https://github.com/NiklasRosenstein/pydoc-markdown/ (I didn't try it)
+
+
+### Installation
+
+No installation necessary. However, if you want:
+
+```bash
+    $ pip install doc2md
+```
+
+
+### Usage
+
+Simplistic utility to extract docstrings from a module or class and throw
+them into a simple [GitHub Flavoured Markdown](md) document. Its purpose is
+to quickly generate `README.md` files for small projects.
+
+[md]: https://help.github.com/articles/github-flavored-markdown
+
+You can run this script from the command line like:
+
+```bash
+    $ doc2md.py [-a] [--no-toc] [-t title] module-name [class-name] > README.md
+```
+
+At the moment  this is suited only  for a very specific use  case. It is
+hardly forseeable, if I will decide to improve on it in the near future.
+
+For a simple example output document, see the generated README (i.e. the
+github frontpage). It is extracted from the `doc2md.py` file using this
+very utility:
+
+    ./doc2md.py -a doc2md > README.md
 
 
 ### License
@@ -32,31 +67,22 @@ This program  is free software.  It comes  without any warranty,  to the
 extent permitted by applicable law.
 
 
-### Description
-
-Little convenience tool to extract docstrings from a module or class and
-convert them to GitHub Flavoured Markdown:
-
-https://help.github.com/articles/github-flavored-markdown
-
-Its purpose is to quickly generate `README.md` files for small projects.
-
-
 ### API
 
-The interface consists of the following functions:
-
- - `doctrim(docstring)`
- - `doc2md(docstring, title)`
-
-You can run this script from the command line like:
-
-```bash
-$ doc2md.py [-a] [--no-toc] [-t title] module-name [class-name] > README.md
-```
+- [doctrim](#doctrim)
+- [doc2md](#doc2md)
 
 
-### Limitations
+#### doctrim
 
-At the moment  this is suited only  for a very specific use  case. It is
-hardly forseeable, if I will decide to improve on it in the near future.
+Clean up indentation from docstrings.
+
+
+Any whitespace that can be uniformly removed from the second line
+onwards is removed.
+
+
+#### doc2md
+
+Convert a docstring to a markdown text.
+
