@@ -196,15 +196,15 @@ def doc2md(docstr, title, min_level=1, more_info=False, toc=True, maxdepth=0):
         level = min_level
         sections = [(lev+shiftlevel, tit) for lev,tit in sections]
 
+    head = next((i for i, l in enumerate(lines) if is_heading(l)), 0)
     md = [
         make_heading(level, title),
         "",
-        lines.pop(0),
-        ""
-    ]
+    ] + lines[:head]
     if toc:
         md += make_toc(sections, maxdepth)
-    md += _doc2md(lines, shiftlevel)
+        md += ['']
+    md += _doc2md(lines[head:], shiftlevel)
     if more_info:
         return (md, sections)
     else:
@@ -242,17 +242,17 @@ def mod2md(module, title, title_api_section, toc=True, maxdepth=0):
     sections += api_sec
 
     # headline
+    head = next((i for i, l in enumerate(lines) if is_heading(l)), 0)
     md = [
         make_heading(level, title),
         "",
-        lines.pop(0),
-        ""
-    ]
+    ] + lines[:head]
 
     # main sections
     if toc:
         md += make_toc(sections, maxdepth)
-    md += _doc2md(lines)
+        md += ['']
+    md += _doc2md(lines[head:])
 
     # API section
     md += [

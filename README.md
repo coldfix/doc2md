@@ -78,7 +78,6 @@ extent permitted by applicable law.
 
 Clean up indentation from docstrings.
 
-
 Any whitespace that can be uniformly removed from the second line
 onwards is removed.
 
@@ -86,4 +85,3 @@ onwards is removed.
 #### `doc2md`
 
 Convert a docstring to a markdown text.
-
