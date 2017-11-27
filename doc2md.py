@@ -177,7 +177,7 @@ def _doc2md(lines, shiftlevel=0):
         md += doc_code_block(code, language)
     return md
 
-def doc2md(docstr, title, min_level=1, more_info=False, toc=True):
+def doc2md(docstr, title, min_level=1, more_info=False, toc=True, maxdepth=0):
     """
     Convert a docstring to a markdown text.
     """
@@ -203,7 +203,7 @@ def doc2md(docstr, title, min_level=1, more_info=False, toc=True):
         ""
     ]
     if toc:
-        md += make_toc(sections, 1)
+        md += make_toc(sections, maxdepth)
     md += _doc2md(lines, shiftlevel)
     if more_info:
         return (md, sections)
