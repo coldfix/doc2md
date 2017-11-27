@@ -84,7 +84,7 @@ def code_block(lines, language=''):
     """
     Mark the code segment for syntax highlighting.
     """
-    return ['```' + language] + lines + ['```']
+    return ['```' + language] + unindent(lines) + ['```']
 
 def doctest2md(lines):
     """
